@@ -4,7 +4,7 @@
 // @description Add timestamps to the Grooveshark Broadcast Chat
 // @include     http://grooveshark.com/*
 // @require       http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
-// @version     1.0.1
+// @version     1.0.2
 // @grant       none
 // ==/UserScript==
 

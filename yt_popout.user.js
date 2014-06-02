@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Popout YouTube
 // @namespace    http://dvbris.com
-// @version      1.2
+// @version      1.2.1
 // @description  Adds a button to watch a popout version of the video
 // @copyright    2014, Geraint White
 // @match        *://*.youtube.com/*

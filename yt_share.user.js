@@ -3,7 +3,7 @@
 // @namespace   ytube-edlolington
 // @description Prevents youtube from automatically switching to the share panel after a video is done playing.
 // @include     *youtube.com/watch?*
-// @version     1.01
+// @version     1.0.1
 // ==/UserScript==
 
 var keyword = "action-panel-trigger";
