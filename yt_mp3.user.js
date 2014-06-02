@@ -15,9 +15,9 @@ function download() {
 function addButtn() {
   if ($('#extra-buttons').length === 0) {
     $('#watch7-sentiment-actions').append(
-			$('<span />')
-				.addClass('yt-uix-button-group')
-				.attr('id', 'extra-buttons')
+      $('<span />')
+        .addClass('yt-uix-button-group')
+        .attr('id', 'extra-buttons')
         .css({
           margin: '10px 0',
           display: 'block'

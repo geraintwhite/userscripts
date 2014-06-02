@@ -11,32 +11,32 @@ var shareBtn;
 
 
 function shareBtnToggle() {
-	//alert("You clicked the share button.");
-	shareBtn.setAttribute("data-trigger-for", "action-panel-share");
-	window.setTimeout(
-		function() {
-			shareBtn.setAttribute("data-trigger-for", "blank");
-		},
-		1000
-	);
-	
+  //alert("You clicked the share button.");
+  shareBtn.setAttribute("data-trigger-for", "action-panel-share");
+  window.setTimeout(
+    function() {
+      shareBtn.setAttribute("data-trigger-for", "blank");
+    },
+    1000
+  );
+
 }
 
 var panelBtns = ( function() {
-	var result = [];
-	var btns = document.getElementsByTagName("button");
-	for (var i=0; i < btns.length; i++) {
-		if (btns[i].className.indexOf(keyword) != -1)
-			result.push(btns[i]);
-	}
-	
-	return result;
+  var result = [];
+  var btns = document.getElementsByTagName("button");
+  for (var i=0; i < btns.length; i++) {
+    if (btns[i].className.indexOf(keyword) != -1)
+      result.push(btns[i]);
+  }
+
+  return result;
 })();
 
 for (var i=0; i < panelBtns.length; i++) {
-	if (panelBtns[i].getAttribute("data-trigger-for") == "action-panel-share") {
-		shareBtn = panelBtns[i];
-		shareBtn.setAttribute("data-trigger-for", "blank");
-		shareBtn.addEventListener("click", shareBtnToggle, false);
-	}
+  if (panelBtns[i].getAttribute("data-trigger-for") == "action-panel-share") {
+    shareBtn = panelBtns[i];
+    shareBtn.setAttribute("data-trigger-for", "blank");
+    shareBtn.addEventListener("click", shareBtnToggle, false);
+  }
 }
