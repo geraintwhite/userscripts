@@ -43,11 +43,10 @@ function main() {
 main();
 
 $(document).on('click', '.dl-button', function() {
-  var url = $(this).parent().siblings('.yt-lockup-title').children('a').attr('href');
-  console.log(url)
-  if (url == undefined) {
-    download(window.location);
+  var url = $(this).parent().siblings('.yt-lockup-title').children('a');
+  if (url.length) {
+    download('http://youtube.com'+url.attr('href'));
   } else {
-    download('http://youtube.com'+url);
+    download(window.location.href);
   }
 });
