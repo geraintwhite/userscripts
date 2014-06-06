@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Popout YouTube
 // @namespace    http://dvbris.com
-// @version      1.3.1
+// @version      1.3.2
 // @description  Adds a button to watch a popout version of the video
 // @copyright    2014, Geraint White
 // @match        *://*.youtube.com/*
@@ -20,7 +20,7 @@ function popout(url, title) {
     );
     player.stopVideo();
   } else {
-    window.open(url.replace('watch?v=','v/') + '?autoplay=1', title, 'width=640,height=480');
+    window.open(url.replace('watch?v=','v/') + '?autoplay=1', title, 'width=560,height=315');
   }
 }
 
