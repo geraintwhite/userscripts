@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       PDFescape ctrl-s save
 // @namespace  http://geraintwhite.co.uk/
-// @version    0.1
+// @version    0.1.2
 // @description  Allows the use of ctrl-s to save a PDF on PDFescape
 // @match      http://www.pdfescape.com/open/*
 // @copyright  2014, Geraint White
