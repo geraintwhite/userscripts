@@ -7,7 +7,7 @@
 // @copyright   2014, Geraint White
 // ==/UserScript==
 
-url = 'http://www.youtube.com/feed/subscriptions';
+var url = 'http://www.youtube.com/feed/subscriptions';
 
 if (/^https?:\/\/www.youtube.com\/$/.test(window.location.href)) {
   window.location.replace(url);
@@ -22,3 +22,6 @@ document.getElementById('logo').onclick = function(e) {
     window.open(url, '_blank');
   }
 };
+
+document.getElementById('appbar-nav').querySelector('li:first-child a').href += '?wtw';
+document.getElementById('guide').querySelector('a[data-external-id=what_to_watch]').href += '?wtw';
