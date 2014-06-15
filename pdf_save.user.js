@@ -10,33 +10,21 @@
 
 
 $(function() {
-    document.addEventListener(
-        'keydown',
-        function(e) {
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.keyCode === 83) {
+            $('iframe').contents().find('#pdfe_side a:first-child').click();
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    $('iframe').addEventListener('onload', function(e) {
+        $('iframe').contents()[0].addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.keyCode === 83) {
-                $('iframe').contents().find('#pdfe_side a:first-child').click();
+                $('#pdfe_side a:first-child').click();
                 e.preventDefault();
                 return false;
             }
-        },
-        false
-    );
-
-    $('iframe').addEventListener(
-        'onload',
-        function() {
-            $('iframe').contents()[0].addEventListener(
-                'keydown',
-                function(e) {
-                    if (e.ctrlKey && e.keyCode === 83) {
-                        $('#pdfe_side a:first-child').click();
-                        e.preventDefault();
-                        return false;
-                    }
-                },
-                false
-            );
-        },
-        false
-	);
+        });
+    });
 });
