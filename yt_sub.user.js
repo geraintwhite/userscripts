@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        YouTube Subscriptions as Default Page
 // @namespace   http://dvbris.com
-// @version     1.1.2
+// @version     1.1.3
 // @description Switches the YouTube homepage to your subscriptions view
 // @match     *://*.youtube.com/*
 // @copyright   2014, Geraint White
