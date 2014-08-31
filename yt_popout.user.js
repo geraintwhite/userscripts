@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Popout YouTube
 // @namespace    http://dvbris.com
-// @version      1.3.2
+// @version      1.3.3
 // @description  Adds a button to watch a popout version of the video
 // @copyright    2014, Geraint White
 // @match        *://*.youtube.com/*
@@ -46,6 +46,7 @@ function main() {
   // from http://userscripts.org/scripts/show/153699
   unsafeWindow.yt.pubsub.instance_.subscribe("init-watch", function(){
     addBtn('#watch7-sentiment-actions');
+    addBtn('#action-panel-overflow-menu li');
   });
   unsafeWindow.yt.pubsub.instance_.subscribe("init-feed", function(){
     addBtn('.feed-item-container .yt-lockup-content');

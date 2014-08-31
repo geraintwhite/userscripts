@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube to mp3
 // @namespace    http://dvbris.com
-// @version      1.3.1
+// @version      1.3.2
 // @description  Adds a button to convert YouTube videos to mp3 using video2mp3.net
 // @copyright    2014, Geraint White
 // @match        *://*.youtube.com/*
@@ -34,6 +34,7 @@ function main() {
   // from http://userscripts.org/scripts/show/153699
   unsafeWindow.yt.pubsub.instance_.subscribe("init-watch", function() {
     addBtn('#watch7-sentiment-actions');
+    addBtn('#action-panel-overflow-menu li');
   });
   unsafeWindow.yt.pubsub.instance_.subscribe("init-feed", function() {
     addBtn('.feed-item-container .yt-lockup-content');
