@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Popout YouTube
 // @namespace    http://dvbris.com
-// @version      1.4.0
+// @version      1.5.0
 // @description  Adds a button to watch a popout version of the video
 // @copyright    2014, Geraint White
 // @match        *://*.youtube.com/*
@@ -27,9 +27,13 @@ function popout(url, title) {
 function watchBtn() {
   $('#action-panel-overflow-menu').append(
     $('<li />').append(
-      $('<button />')
-        .addClass('yt-ui-menu-item popout-button')
-        .text('Open popout')
+      $('<button />').append(
+        $('<span />')
+          .addClass('yt-ui-menu-item-icon'),
+        $('<span />')
+          .addClass('yt-ui-menu-item-label')
+          .text('Open popout')
+      ).addClass('yt-ui-menu-item popout-button')
     )
   );
 }
