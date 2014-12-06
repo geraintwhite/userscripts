@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Popout YouTube
 // @namespace    http://dvbris.com
-// @version      1.5.0
+// @version      1.5.1
 // @description  Adds a button to watch a popout version of the video
 // @copyright    2014, Geraint White
 // @match        *://*.youtube.com/*
@@ -58,6 +58,14 @@ function feedBtn() {
   $(hasGrp.selector).append(popBtn.clone());
 }
 
+function playlistBtn() {
+  $('.playlist-actions').append(
+    $('<button />')
+      .addClass('yt-uix-button yt-uix-button-size-default yt-uix-button-default popout-button')
+      .text('Open popout')
+  )
+}
+
 function main() {
   unsafeWindow.yt.pubsub.instance_.subscribe('init-watch', function() {
     console.log('watch');
@@ -67,14 +75,19 @@ function main() {
     console.log('feed');
     feedBtn();
   });
+  unsafeWindow.yt.pubsub.instance_.subscribe('init-playlist', function() {
+    console.log('playlist');
+    playlistBtn();
+  });
 }
 
 main();
 
 $(document).on('click', '.popout-button', function() {
   var url = $(this).parent().siblings('.yt-lockup-title').children('a');
+  if (!url.length) url = $('.playlist-actions .playlist-play-all');
   if (url.length) {
-    console.log('feed')
+    console.log(url.attr('href'));
     popout(url.attr('href'), url.textContent);
   } else {
     popout();
