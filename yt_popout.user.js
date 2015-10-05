@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Popout YouTube
-// @namespace    http://dvbris.com
-// @version      1.5.1
+// @namespace    http://geraintwhite.co.uk
+// @version      1.5.2
 // @description  Adds a button to watch a popout version of the video
 // @copyright    2014, Geraint White
 // @match        *://*.youtube.com/*
@@ -10,13 +10,11 @@
 
 function popout(url, title) {
   if (url == undefined) {
-    var width = $('#player').width();
-    var height = $('#player').height();
     var player = $('#movie_player')[0];
     window.open(
       window.location.href.replace('watch?v=','v/') + '?start=' + player.getCurrentTime().toString().split('.')[0] + '&autoplay=1',
       document.title,
-      'width=' + width + ',height=' + height
+      'width=' + player.offsetWidth + ',height=' + player.offsetHeight
     );
     player.stopVideo();
   } else {
