@@ -51,7 +51,7 @@
         }
     }
 
-    const addVideoToPlaylist = (id) => {
+    const addVideoToPlaylist = (id, cb = console.log) => {
         const request = gapi.client.youtube.playlistItems.insert({
             part: 'snippet',
             resource: {
@@ -65,7 +65,7 @@
             }
         });
 
-        request.execute(console.log);
+        request.execute(cb);
     };
 
     const addToWatchLater = (id, e) => {
@@ -85,14 +85,19 @@
     };
 
     const addAllToWatchLater = (ids, e) => {
+        if (!ids.length) {
+            return;
+        }
+
         if (cachedAuthResult && !cachedAuthResult.error) {
-            ids.forEach((id) => addVideoToPlaylist(id));
+            const [id, ...rest] = ids;
+            addVideoToPlaylist(id, () => addAllToWatchLater(rest));
         } else {
             gapi.auth.authorize({
                 client_id: OAUTH2_CLIENT_ID,
                 scope: OAUTH2_SCOPES,
                 immediate: false
-            }, (authResult) => handleAuthResult(authResult, () => ids.forEach((id) => addVideoToPlaylist(id))));
+            }, (authResult) => handleAuthResult(authResult, () => addAllToWatchLater(ids)));
         }
 
         if (e) {
