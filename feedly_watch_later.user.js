@@ -86,6 +86,9 @@
 
     const addAllToWatchLater = (ids, e) => {
         if (!ids.length) {
+            if (confirm('All videos added. Would you like to open YouTube?')) {
+                window.open('https://www.youtube.com/playlist?list=WL', '_blank').focus();
+            }
             return;
         }
 
@@ -107,31 +110,33 @@
 
     const getVideoId = (url) => url.split('?v=')[1];
 
+    const createButton = (onclick) => {
+        const icon = document.createElement('i');
+        icon.className = 'icon icon-sm icon-fx-play-ios-sm-black';
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'EntryReadLaterButton rounded EntryToolbar__button button-icon-only';
+        button.title = 'Watch Later';
+        button.onclick = onclick;
+        button.appendChild(icon);
+
+        return button;
+    };
+
     const interval = setInterval(() => {
         if (document.querySelectorAll('.content').length) {
             const ids = [];
 
             for (const row of [...document.querySelectorAll('.content')]) {
                 const id = getVideoId(row.querySelector('a').href);
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'save-for-later';
-                button.title = 'Watch Later';
-                button.style = 'background-image: url("https://e7.pngegg.com/pngimages/901/503/png-clipart-black-play-button-icon-youtube-computer-icons-social-media-play-button-angle-rectangle.png");';
-                button.onclick = (e) => addToWatchLater(id, e);
-                row.insertBefore(button, row.querySelector('.metadata'));
+                const toolbar = row.querySelector('.entry__toolbar');
+                toolbar.insertBefore(createButton((e) => addToWatchLater(id, e)), toolbar.children[0]);
                 ids.push(id);
             }
 
-            const actionButton = document.createElement('button');
-            actionButton.type = 'button';
-            actionButton.className = 'save-for-later';
-            actionButton.title = 'Watch Later';
-            actionButton.style = 'background-image: url("https://e7.pngegg.com/pngimages/901/503/png-clipart-black-play-button-icon-youtube-computer-icons-social-media-play-button-angle-rectangle.png");';
-            actionButton.onclick = (e) => addAllToWatchLater(ids, e);
-
             const actions = document.querySelector('.actions-container');
-            actions.insertBefore(actionButton, actions.children[1]);
+            actions.insertBefore(createButton((e) => addAllToWatchLater(ids, e)), actions.children[1]);
 
             clearInterval(interval);
         }
