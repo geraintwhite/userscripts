@@ -11,10 +11,10 @@
 (function() {
     'use strict';
 
+    const PLAYLIST_ID = 'PLoezn_eiiK9aWPQRh-lrY9f38DciX_wgY'; // YouTube now prevents adding videos to the WL playlist so you must create your own playlist
+
     const OAUTH2_CLIENT_ID = '846857736261-u84r4qvoakrncsfme16j3cdrht193ep0.apps.googleusercontent.com';
-    const OAUTH2_SCOPES = [
-        'https://www.googleapis.com/auth/youtube'
-    ];
+    const OAUTH2_SCOPES = ['https://www.googleapis.com/auth/youtube'];
 
     let cachedAuthResult;
 
@@ -56,7 +56,7 @@
             part: 'snippet',
             resource: {
                 snippet: {
-                    playlistId: 'WL',
+                    playlistId: PLAYLIST_ID,
                     resourceId: {
                         videoId: id,
                         kind: 'youtube#video'
@@ -87,7 +87,7 @@
     const addAllToWatchLater = (ids, e) => {
         if (!ids.length) {
             if (confirm('All videos added. Would you like to open YouTube?')) {
-                window.open('https://www.youtube.com/playlist?list=WL', '_blank').focus();
+                window.open('https://www.youtube.com/playlist?list=' + PLAYLIST_ID, '_blank').focus();
             }
             return;
         }
