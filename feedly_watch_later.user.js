@@ -1,19 +1,19 @@
 // ==UserScript==
 // @name         Feedly watch later
 // @namespace    https://geraintwhite.co.uk/
-// @version      0.1
+// @version      0.2
 // @description  Add Watch Later button for YouTube videos in Feedly
 // @author       Geraint White
 // @match        https://feedly.com/*
 // @grant        none
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
 
-    const PLAYLIST_ID = 'PLoezn_eiiK9aWPQRh-lrY9f38DciX_wgY'; // YouTube now prevents adding videos to the WL playlist so you must create your own playlist
-
-    const OAUTH2_CLIENT_ID = '846857736261-u84r4qvoakrncsfme16j3cdrht193ep0.apps.googleusercontent.com';
+    const PLAYLIST_NAME = 'Feedly Watch Later';
+    const OAUTH2_CLIENT_ID =
+        '846857736261-u84r4qvoakrncsfme16j3cdrht193ep0.apps.googleusercontent.com';
     const OAUTH2_SCOPES = ['https://www.googleapis.com/auth/youtube'];
 
     let cachedAuthResult;
@@ -24,15 +24,18 @@
             console.log('gapi.auth.init');
             window.setTimeout(checkAuth, 1000);
         });
-    }
+    };
 
     function checkAuth() {
         console.log('checkAuth');
-        gapi.auth.authorize({
-            client_id: OAUTH2_CLIENT_ID,
-            scope: OAUTH2_SCOPES,
-            immediate: true
-        }, (authResult) => handleAuthResult(authResult));
+        gapi.auth.authorize(
+            {
+                client_id: OAUTH2_CLIENT_ID,
+                scope: OAUTH2_SCOPES,
+                immediate: true
+            },
+            (authResult) => handleAuthResult(authResult)
+        );
     }
 
     function handleAuthResult(authResult, cb) {
@@ -51,14 +54,55 @@
         }
     }
 
-    const addVideoToPlaylist = (id, cb = console.log) => {
+    const getPlaylist = (title, cb = console.log) => {
+        const request = gapi.client.youtube.playlists.list({
+            part: 'snippet',
+            mine: true
+        });
+
+        request.execute((response) => {
+            const playlist =
+                response.result &&
+                response.result.items.find(
+                    (item) => item.snippet.title === title
+                );
+            cb(playlist && playlist.id);
+        });
+    };
+
+    const createPlaylist = (title, cb = console.log) => {
+        const request = gapi.client.youtube.playlists.insert({
+            part: 'snippet',
+            resource: {
+                snippet: {
+                    title
+                }
+            }
+        });
+
+        request.execute((response) => {
+            cb(response.result && response.result.id);
+        });
+    };
+
+    const getOrCreatePlaylist = (cb = console.log) => {
+        getPlaylist(PLAYLIST_NAME, (playlistId) => {
+            if (playlistId) {
+                cb(playlistId);
+            } else {
+                createPlaylist(PLAYLIST_NAME, cb);
+            }
+        });
+    };
+
+    const addVideoToPlaylist = (playlistId, videoId, cb = console.log) => {
         const request = gapi.client.youtube.playlistItems.insert({
             part: 'snippet',
             resource: {
                 snippet: {
-                    playlistId: PLAYLIST_ID,
+                    playlistId,
                     resourceId: {
-                        videoId: id,
+                        videoId,
                         kind: 'youtube#video'
                     }
                 }
@@ -68,15 +112,37 @@
         request.execute(cb);
     };
 
-    const addToWatchLater = (id, e) => {
+    const initPlaylist = (cb) => {
         if (cachedAuthResult && !cachedAuthResult.error) {
-            addVideoToPlaylist(id);
+            getOrCreatePlaylist(cb);
         } else {
-            gapi.auth.authorize({
-                client_id: OAUTH2_CLIENT_ID,
-                scope: OAUTH2_SCOPES,
-                immediate: false
-            }, (authResult) => handleAuthResult(authResult, () => addVideoToPlaylist(id)));
+            gapi.auth.authorize(
+                {
+                    client_id: OAUTH2_CLIENT_ID,
+                    scope: OAUTH2_SCOPES,
+                    immediate: false
+                },
+                (authResult) =>
+                    handleAuthResult(authResult, () => getOrCreatePlaylist(cb))
+            );
+        }
+    };
+
+    const addToWatchLater = (playlistId, videoId, e) => {
+        if (cachedAuthResult && !cachedAuthResult.error) {
+            addVideoToPlaylist(playlistId, videoId);
+        } else {
+            gapi.auth.authorize(
+                {
+                    client_id: OAUTH2_CLIENT_ID,
+                    scope: OAUTH2_SCOPES,
+                    immediate: false
+                },
+                (authResult) =>
+                    handleAuthResult(authResult, () =>
+                        addVideoToPlaylist(playlistId, videoId)
+                    )
+            );
         }
 
         if (e) {
@@ -84,23 +150,37 @@
         }
     };
 
-    const addAllToWatchLater = (ids, e) => {
-        if (!ids.length) {
+    const addAllToWatchLater = (playlistId, videoIds, e) => {
+        if (!videoIds.length) {
             if (confirm('All videos added. Would you like to open YouTube?')) {
-                window.open('https://www.youtube.com/playlist?list=' + PLAYLIST_ID, '_blank').focus();
+                window
+                    .open(
+                        'https://www.youtube.com/playlist?list=' + playlistId,
+                        '_blank'
+                    )
+                    .focus();
             }
             return;
         }
 
         if (cachedAuthResult && !cachedAuthResult.error) {
-            const [id, ...rest] = ids;
-            addVideoToPlaylist(id, () => addAllToWatchLater(rest));
+            const [videoId, ...rest] = videoIds;
+
+            addVideoToPlaylist(playlistId, videoId, () =>
+                addAllToWatchLater(playlistId, rest)
+            );
         } else {
-            gapi.auth.authorize({
-                client_id: OAUTH2_CLIENT_ID,
-                scope: OAUTH2_SCOPES,
-                immediate: false
-            }, (authResult) => handleAuthResult(authResult, () => addAllToWatchLater(ids)));
+            gapi.auth.authorize(
+                {
+                    client_id: OAUTH2_CLIENT_ID,
+                    scope: OAUTH2_SCOPES,
+                    immediate: false
+                },
+                (authResult) =>
+                    handleAuthResult(authResult, () =>
+                        addAllToWatchLater(playlistId, videoIds)
+                    )
+            );
         }
 
         if (e) {
@@ -116,7 +196,8 @@
 
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'EntryReadLaterButton rounded EntryToolbar__button button-icon-only';
+        button.className =
+            'EntryReadLaterButton rounded EntryToolbar__button button-icon-only';
         button.title = 'Watch Later';
         button.onclick = onclick;
         button.appendChild(icon);
@@ -126,17 +207,31 @@
 
     const interval = setInterval(() => {
         if (document.querySelectorAll('.content').length) {
-            const ids = [];
+            const videoIds = [];
 
             for (const row of [...document.querySelectorAll('.content')]) {
-                const id = getVideoId(row.querySelector('a').href);
+                const videoId = getVideoId(row.querySelector('a').href);
                 const toolbar = row.querySelector('.entry__toolbar');
-                toolbar.insertBefore(createButton((e) => addToWatchLater(id, e)), toolbar.children[0]);
-                ids.push(id);
+                toolbar.insertBefore(
+                    createButton((e) =>
+                        initPlaylist((playlistId) =>
+                            addToWatchLater(playlistId, videoId, e)
+                        )
+                    ),
+                    toolbar.children[0]
+                );
+                videoIds.push(videoId);
             }
 
             const actions = document.querySelector('.actions-container');
-            actions.insertBefore(createButton((e) => addAllToWatchLater(ids, e)), actions.children[1]);
+            actions.insertBefore(
+                createButton((e) =>
+                    initPlaylist((playlistId) =>
+                        addAllToWatchLater(playlistId, videoIds, e)
+                    )
+                ),
+                actions.children[1]
+            );
 
             clearInterval(interval);
         }
@@ -144,6 +239,7 @@
 
     const script = document.createElement('script');
     script.type = 'text/javascript';
-    script.src = 'https://apis.google.com/js/client.js?onload=googleApiClientReady';
+    script.src =
+        'https://apis.google.com/js/client.js?onload=googleApiClientReady';
     document.head.appendChild(script);
 })();
