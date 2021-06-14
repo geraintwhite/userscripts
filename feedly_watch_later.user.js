@@ -191,13 +191,13 @@
     const getVideoId = (url) => url.split('?v=')[1];
 
     const createButton = (onclick) => {
-        const icon = document.createElement('i');
-        icon.className = 'icon icon-sm icon-fx-play-ios-sm-black';
+        const icon = document.createElement('img');
+        icon.src = 'https://upload.wikimedia.org/wikipedia/commons/8/8b/YouTube_dark_icon_%282017%29.svg';
+        icon.style.cssText = 'width: 100%';
 
         const button = document.createElement('button');
         button.type = 'button';
-        button.className =
-            'EntryReadLaterButton rounded EntryToolbar__button button-icon-only';
+        button.className = 'EntryReadLaterButton button-icon-only';
         button.title = 'Watch Later';
         button.onclick = onclick;
         button.appendChild(icon);
