@@ -211,7 +211,7 @@
 
             for (const row of [...document.querySelectorAll('.content')]) {
                 const videoId = getVideoId(row.querySelector('a').href);
-                const toolbar = row.querySelector('.entry__toolbar');
+                const toolbar = row.querySelector('.EntryToolbar');
                 toolbar.insertBefore(
                     createButton((e) =>
                         initPlaylist((playlistId) =>
