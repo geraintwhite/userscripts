@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Feedly watch later
 // @namespace    https://geraintwhite.co.uk/
-// @version      0.2
+// @version      0.2.1
 // @description  Add Watch Later button for YouTube videos in Feedly
 // @author       Geraint White
 // @match        https://feedly.com/*
@@ -195,12 +195,16 @@
         icon.src = 'https://upload.wikimedia.org/wikipedia/commons/8/8b/YouTube_dark_icon_%282017%29.svg';
         icon.style.cssText = 'width: 100%';
 
+        const span = document.createElement('span');
+        span.className = 'jthuVxlV6d6mDAPuHzn3';
+        span.appendChild(icon);
+
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'EntryReadLaterButton button-icon-only';
+        button.className = 'FjPVJQi2JHUNzHuLRi6c EntryReadLaterButton EntryToolbar__button EntryToolbar__button--small Tk26NjN7Stiou6nuvERj Aa9fVqgYky7cvDsTDfCw';
         button.title = 'Watch Later';
         button.onclick = onclick;
-        button.appendChild(icon);
+        button.appendChild(span);
 
         return button;
     };
@@ -223,7 +227,7 @@
                 videoIds.push(videoId);
             }
 
-            const actions = document.querySelector('.actions-container');
+            const actions = document.querySelector('.MarkAsReadButton').parentNode;
             actions.insertBefore(
                 createButton((e) =>
                     initPlaylist((playlistId) =>
