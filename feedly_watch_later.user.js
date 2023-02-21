@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Feedly watch later
 // @namespace    https://geraintwhite.co.uk/
-// @version      0.2.1
+// @version      0.2.2
 // @description  Add Watch Later button for YouTube videos in Feedly
 // @author       Geraint White
 // @match        https://feedly.com/*
@@ -152,14 +152,12 @@
 
     const addAllToWatchLater = (playlistId, videoIds, e) => {
         if (!videoIds.length) {
-            if (confirm('All videos added. Would you like to open YouTube?')) {
-                window
-                    .open(
-                        'https://www.youtube.com/playlist?list=' + playlistId,
-                        '_blank'
-                    )
-                    .focus();
-            }
+            window
+                .open(
+                'https://www.youtube.com/playlist?list=' + playlistId,
+                '_blank'
+            )
+                .focus();
             return;
         }
 
@@ -201,7 +199,7 @@
 
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'FjPVJQi2JHUNzHuLRi6c EntryReadLaterButton EntryToolbar__button EntryToolbar__button--small Tk26NjN7Stiou6nuvERj Aa9fVqgYky7cvDsTDfCw';
+        button.style.cssText = 'width: 30px; background: none; border: 0; cursor: pointer';
         button.title = 'Watch Later';
         button.onclick = onclick;
         button.appendChild(span);
@@ -209,35 +207,40 @@
         return button;
     };
 
-    const interval = setInterval(() => {
-        if (document.querySelectorAll('.content').length) {
-            const videoIds = [];
+    const getVideoIds = () => {
+        return [...document.querySelectorAll('.MagazineEntry__content')].map((row) => getVideoId(row.querySelector('a').href));
+    }
 
-            for (const row of [...document.querySelectorAll('.content')]) {
+    const interval = setInterval(() => {
+        if (document.querySelectorAll('.MagazineEntry__content').length) {
+            for (const row of [...document.querySelectorAll('.MagazineEntry__content')]) {
                 const videoId = getVideoId(row.querySelector('a').href);
                 const toolbar = row.querySelector('.EntryToolbar');
-                toolbar.insertBefore(
+                if (toolbar && !toolbar.querySelector('img')) {
+                    toolbar.insertBefore(
+                        createButton((e) =>
+                            initPlaylist((playlistId) =>
+                                addToWatchLater(playlistId, videoId, e)
+                            )
+                        ),
+                        toolbar.children[0]
+                    );
+                }
+            }
+        }
+
+        if (document.querySelector('.MarkAsReadButton')) {
+            const actions = document.querySelector('.MarkAsReadButton').parentNode;
+            if (actions && !actions.querySelector('img')) {
+                actions.insertBefore(
                     createButton((e) =>
                         initPlaylist((playlistId) =>
-                            addToWatchLater(playlistId, videoId, e)
+                            addAllToWatchLater(playlistId, getVideoIds(), e)
                         )
                     ),
-                    toolbar.children[0]
+                    actions.children[1]
                 );
-                videoIds.push(videoId);
             }
-
-            const actions = document.querySelector('.MarkAsReadButton').parentNode;
-            actions.insertBefore(
-                createButton((e) =>
-                    initPlaylist((playlistId) =>
-                        addAllToWatchLater(playlistId, videoIds, e)
-                    )
-                ),
-                actions.children[1]
-            );
-
-            clearInterval(interval);
         }
     }, 1000);
 
