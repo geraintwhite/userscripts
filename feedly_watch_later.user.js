@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Feedly watch later
 // @namespace    https://geraintwhite.co.uk/
-// @version      0.2.3
+// @version      0.2.4
 // @description  Add Watch Later button for YouTube videos in Feedly
 // @author       Geraint White
 // @match        https://feedly.com/*
@@ -208,13 +208,13 @@
     };
 
     const getVideoIds = () => {
-        return [...document.querySelectorAll('.MagazineLayout__content')].map((row) => getVideoId(row.querySelector('a').href));
+        return [...document.querySelectorAll('.SelectedEntryScroller')].map((row) => getVideoId(row.querySelector('.EntryTitleLink').href));
     }
 
     const interval = setInterval(() => {
-        if (document.querySelectorAll('.MagazineLayout__content').length) {
-            for (const row of [...document.querySelectorAll('.MagazineLayout__content')]) {
-                const videoId = getVideoId(row.querySelector('a').href);
+        if (document.querySelectorAll('.SelectedEntryScroller').length) {
+            for (const row of [...document.querySelectorAll('.SelectedEntryScroller')]) {
+                const videoId = getVideoId(row.querySelector('.EntryTitleLink').href);
                 const toolbar = row.querySelector('.EntryToolbar');
                 if (toolbar && !toolbar.querySelector('img')) {
                     toolbar.insertBefore(
